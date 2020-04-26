@@ -1,0 +1,101 @@
+<html>
+    <head>
+        <title>Open Ticket Support</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="script/semantic/semantic.min.css">
+        <script type="text/javascript" src="script/jquery.min.js"></script>
+        <script type="text/javascript" src="script/semantic/semantic.min.js"></script>
+        <link rel="stylesheet" href="script/simplemde/simplemde.min.css">
+        <script src="script/simplemde/simplemde.min.js"></script>
+        <style>
+            .CodeMirror,
+            .CodeMirror-scroll {
+                max-height: 300px;
+            }
+            body{
+                background-color:#f2f2f2;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="ui menu">
+            <div class="ui container">
+            <a class="header item" href="index.html">
+              Open Ticket Support
+            </a>
+            <a class="active item">
+               <i class="add icon"></i> New Ticket
+            </a>
+            <a class="item" href="admin/">
+              Admin Login
+            </a>
+            <a class="item" href="">
+                About OTS
+            </a>
+        </div>
+          </div>
+          <br>
+        <div class="ui container">
+            <div class="ui segments" style="padding:2em; background-color:white;">
+                <h2 class="ui header">
+                    <i class="ticket icon"></i>
+                    <div class="content">
+                      Create Ticket
+                      <div class="sub header">This is a form for creating tickets. <br>Fill the form and send us your issue / suggession. Our support system will answer it as soon as possible.</div>
+                    </div>
+                  </h2>
+                <form id="mainform" class="ui form" action="./submitTicket" onsubmit="checkForm(event);">
+                    <div class="two fields">
+                        <div class="field">
+                            <label>Email</label>
+                            <input type="text" name="email">
+                        </div>
+                        <div class="field">
+                            <label>Full Name</label>
+                            <input type="text" name="fullname">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Organization</label>
+                        <input type="text" name="organization">
+                    </div>
+                    <div class="field">
+                        <label>Title</label>
+                        <input type="text" name="title">
+                    </div>
+                    <div class="field">
+                        <label>Content</label>
+                        <textarea id="ticketContent" name="content"></textarea>
+                    </div>
+                    <button class="ui primary button" type="submit">Submit</button>
+            </div>
+        </div>
+       <script>
+           var simplemde = new SimpleMDE({ 
+               element: document.getElementById("ticketContent"),
+               hideIcons: ["guide", "heading", "image", "side-by-side", "fullscreen"],
+               promptURLs: true,
+               placeholder: "Enter ticket content here",
+               });
+            
+            function checkForm(evt){
+                var valid = true;
+                $("#mainform").find("input").each(function(){
+                    if ($(this).val() == ""){
+                        $(this).parent().addClass("error");
+                        valid = false;
+                    }
+                });
+                var content = simplemde.value();
+                if (content == ""){
+                    alert("Ticket content cannot be empty!");
+                    valid = false;
+                }
+                if (!valid){
+                    evt.preventDefault();
+                }
+            }
+        </script>
+    </body>
+</html> 

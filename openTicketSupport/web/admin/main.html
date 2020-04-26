@@ -1,0 +1,118 @@
+<html>
+    <head>
+        <title>Admin Panel</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../script/semantic/semantic.min.css">
+        <script type="text/javascript" src="../script/jquery.min.js"></script>
+        <script type="text/javascript" src="../script/semantic/semantic.min.js"></script>
+    </head>
+    <body>
+        <div class="ui menu">
+            <div class="ui container">
+                <div class="header item" href="../index.html">
+                Open Ticket Support
+                </div>
+                <a class="active item">
+                    Admin Panel
+                </a>
+                <a class="item" href="../adminLogout">
+                   Logout  <i class="external icon" style="margin-left:12px;"></i> 
+                </a>
+            </div>
+        </div>
+        <div class="ui text container">
+            <div class="ui segment">
+                <p>Display Settings</p>
+                <button class="ui primary button" onclick="initTicket();">
+                    Show All
+                </button>
+                <button class="ui primary button" onclick="initTicket(50);">
+                    50 Tickets
+                </button>
+                <button class="ui primary button" onclick="initTicket(100);">
+                    100 Tickets
+                </button>
+                <button class="ui primary button" onclick="initTicket(200);">
+                    200 Tickets
+                </button>
+                <button class="ui button" onclick="exportCSV();">
+                    Export as CSV
+                </button>
+            </div>
+            <div id="ticketList" class="ui styled fluid accordion">
+                <div class="title active">
+                <i class="dropdown icon"></i>
+                    Title
+                </div>
+                <div class="content active">
+                    <h4 class="ui header">
+                        Fullname / Organization
+                        <div class="sub header">test@gmail.com</div>
+                    </h4>
+                    <div class="ui segment">
+                        Content Here
+                    </div>
+                    <small>UUID: 1587828892e0d21a00-2201-419e-6fb0-9f826f9b5129</small><br>
+                    <small>TIMESTAMP: 2020-04-25T23:34:52.1505371+08:00</small>
+                </div>
+                
+              </div>
+        </div>
+        
+
+        <script>
+            $.get("../chklogin",function(data){
+                if (data == false){
+                    //This user already logged in. Redirect to main page
+                    window.location.href = "index.html";
+                }
+            })
+
+            //Initiate ticket list
+            initTicket(50);
+
+            function exportCSV(){
+                window.open("../exportcsv");
+            }
+
+            function initTicket(count=0){
+                $("#ticketList").html("");
+                $.get("../list?c=" + count,function(data){
+                    if (data.error !== undefined){
+                        //Something goes wrong. Should be not logged in
+                        window.location.href = "index.html";
+                    }else{
+                        //List the tickets
+                        for (var i = 0; i < data.length; i++){
+                            var thisTicket = data[i];
+                            var active = "";
+                            if (i == 0){
+                                active = "active";
+                            }
+                            $("#ticketList").append(`<div class="title ${active}">
+                                <i class="dropdown icon"></i>
+                                    ${thisTicket.Title}
+                                </div>
+                                <div class="content ${active}">
+                                    <h4 class="ui header">
+                                        ${thisTicket.Fullname} / ${thisTicket.Organization}
+                                        <div class="sub header">${thisTicket.Email}</div>
+                                    </h4>
+                                    <div class="ui segment">
+                                        ${thisTicket.Content}
+                                    </div>
+                                    <small>UUID: ${thisTicket.Uuid}</small><br>
+                                    <small>CREATE DATE: ${thisTicket.SubmissionTime.substring(0,10)}</small>
+                                </div>`);
+                        }
+
+                        $('.ui.accordion').accordion();
+
+                    }
+                });
+               
+            }
+        </script>
+    </body>
+</html>

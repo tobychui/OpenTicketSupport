@@ -1,0 +1,91 @@
+<html>
+    <head>
+        <title>Admin Login</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../script/semantic/semantic.min.css">
+        <script type="text/javascript" src="../script/jquery.min.js"></script>
+        <script type="text/javascript" src="../script/semantic/semantic.min.js"></script>
+    </head>
+    <body>
+        <div class="ui menu">
+            <div class="ui container">
+                <a class="header item" href="../index.html">
+                Open Ticket Support
+                </a>
+                <a class="active item">
+                Admin Login
+                </a>
+            </div>
+        </div>
+        <br><br>
+        <div class="ui container">
+            <div class="ui basic segment">
+                <h2 class="ui header">
+                    <img src="../img/admin.png">
+                    <div class="content">
+                        Admin Login
+                      <div class="sub header">Enter the admin token in the form below to continue.</div>
+                    </div>
+                  </h2>
+            </div>
+            <div id="logouttips" class="ui info message" style="display:none;">
+                <i class="close icon"></i>
+                <div class="header">
+                  <i class="checkmark icon"></i> You have been logged out
+                </div>
+              </div>
+
+            <div class="ui segment">
+                <form class="ui form" onsubmit="handleLogin(event);">
+                    <div class="field">
+                        <label>Access Token</label>
+                        <input type="text" id="tokenInput" placeholder="Input access token here">
+                    </div>
+                    <button class="ui primary button" type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+        <script>
+            $.get("../chklogin",function(data){
+                if (data == true){
+                    //This user already logged in. Redirect to main page
+                    window.location.href = "main.html";
+                }
+            })
+
+            if (window.location.hash == "#logout"){
+                $("#logouttips").show();
+            }
+
+            //Handle token login
+            function handleLogin(evt){
+                evt.preventDefault();
+                var token = $("#tokenInput").val();
+                $.ajax({
+                    url: "../adminLogin",
+                    method: "POST",
+                    data: {"token": token},
+                    success: function(data){
+                        if (data.error !== undefined){
+                            $("#tokenInput").parent().addClass("error");
+                        }else{
+                            //OK
+                            window.location.href = "main.html";
+                        }
+                    }
+                });
+            }
+
+            //Handle message close
+            $('.message .close')
+                .on('click', function() {
+                    $(this)
+                    .closest('.message')
+                    .transition('fade')
+                    ;
+                })
+                ;
+        </script>
+    </body>
+</html>
